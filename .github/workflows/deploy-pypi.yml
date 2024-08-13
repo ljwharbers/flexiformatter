@@ -23,7 +23,6 @@ jobs:
         run: python setup.py sdist bdist_wheel
 
       - name: Publish flexiplex formatter to PyPI
-        if: github.repostitory == 'VIB-CCB-BioIT/flexiplex_tag_formatter'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
