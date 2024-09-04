@@ -14,7 +14,7 @@ def main(infile: str):
         header = read.qname.split("#")
         # Remove '?_' from first element of header
         umi = header[0].replace("?_", "")
-        bc = header[1].replace("ATCT_", "")
+        bc = header[1].replace("_", "")
         # Set new header and new tags
         new_header = umi + "_" + bc + "#" + header[2]
         # Set tags and new header
