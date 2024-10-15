@@ -21,3 +21,6 @@ def main(infile: str):
 
         # Write new reads
         out_sam.write(read)
+
+if __name__ == "__main__":
+  app()
