@@ -10,17 +10,14 @@ def main(infile: str):
   with simplesam.Reader(open(infile)) as in_bam:
     with simplesam.Writer(sys.stdout, in_bam.header) as out_sam:
       for read in in_bam:
-        # Get header name and split by "_"
-        header = read.qname.split("#")
-        # Remove '?_' from first element of header
-        umi = header[0].replace("?_", "")
-        bc = header[1].replace("_", "")
-        # Set new header and new tags
-        new_header = umi + "_" + bc + "#" + header[2]
-        # Set tags and new header
+        # Get header name and split by "_#"
+        bc_umi = read.qname.split("#")[0]
+        bc = bc_umi.split("_")[0]
         read.tags['CB'] = bc
-        read.tags['UR'] = umi
-        read.qname = new_header
 
-        # Write new reads to stdout
+        if len(bc_umi.split("_")) > 1:
+          umi = bc_umi.split("_")[1]
+          read.tags['UR'] = umi
+
+        # Write new reads
         out_sam.write(read)
