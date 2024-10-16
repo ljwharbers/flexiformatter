@@ -12,14 +12,17 @@ def main(infile: str):
         with simplesam.Writer(sys.stdout, in_bam.header) as out_sam:
             for read in in_bam:
                 # Get header name and split by "_#"
-                bc_umi = read.qname.split("#")[0]
-                bc = bc_umi.split("_")[0]
-                read.tags['CB'] = bc
-
-                if len(bc_umi.split("_")) > 1:
-                    umi = bc_umi.split("_")[1]
+                bc_umi = read.qname.split("_#")[0]
+                
+                if len(bc_umi.split("#")) > 1:
+                    bc = bc_umi.split("#")[1]
+                    umi = bc_umi.split("#")[0].split("_")[1]
+                    read.tags['CB'] = bc
                     read.tags['UR'] = umi
-
+                else:
+                    bc = bc_umi
+                    read.tags['CB'] = bc
+                
                 # Write new reads
                 out_sam.write(read)
 
@@ -36,4 +39,4 @@ def version():
     typer.echo(f"flexi_formatter version: {__version__}")
 
 if __name__ == "__main__":
-    app()
+    typer.run(main)
