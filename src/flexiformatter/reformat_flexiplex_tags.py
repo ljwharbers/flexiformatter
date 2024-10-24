@@ -2,12 +2,32 @@ import re
 import sys
 import typer
 import simplesam
-from flexi_formatter import __version__ 
+from flexiformatter import __version__ 
 
-app = typer.Typer()
+app = typer.Typer(add_completion=False)
+
+@app.callback(invoke_without_command=True)
+def callback(
+    ctx: typer.Context, 
+    infile: str = typer.Argument(None),
+    version: bool = typer.Option(
+        None, "--version", "-v", help="Prints the version of the tool.", is_eager=True
+    ),
+):
+    """
+    A simple tool for processing BAM/SAM files.
+    """
+    if version:
+        typer.echo(f"flexi_formatter version: {__version__}")
+        raise typer.Exit()
+
+    if ctx.invoked_subcommand is None and infile is not None:
+        # If no subcommand is invoked and 'infile' is given, call 'main' directly
+        main(infile)
 
 @app.command()
 def main(infile: str):
+    """Process BAM/SAM file."""
     with simplesam.Reader(open(infile)) as in_bam:
         with simplesam.Writer(sys.stdout, in_bam.header) as out_sam:
             for read in in_bam:
@@ -26,17 +46,5 @@ def main(infile: str):
                 # Write new reads
                 out_sam.write(read)
 
-@app.callback()
-def callback():
-    """
-    A simple tool for processing BAM/SAM files.
-    """
-    pass
-
-@app.command()
-def version():
-    """Prints the version of the tool."""
-    typer.echo(f"flexi_formatter version: {__version__}")
-
 if __name__ == "__main__":
-    typer.run(main)
+    app()

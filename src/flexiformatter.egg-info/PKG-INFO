@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
-Name: flexi_formatter
-Version: 0.0.1
+Name: flexiformatter
+Version: 1.0.2
 Summary: Moving flexiplex barcode and UMI to bam tags
 Author: Luuk Harbers
 Author-email: luuk.harbers@kuleuven.be
