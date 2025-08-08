@@ -31,17 +31,16 @@ def main(infile: str):
     with simplesam.Reader(open(infile)) as in_bam:
         with simplesam.Writer(sys.stdout, in_bam.header) as out_sam:
             for read in in_bam:
-                # Get header name and split by "_#"
-                bc_umi = read.qname.split("_#")[0]
+            
+                # Get header name and split by "_#" or "#"
+                match = re.match(r'^([ACGT]+)(?:_([ACGT]+))?#', read.qname)
+                bc = match.group(1) if match else None
+                umi = match.group(2) if match and len(match.groups()) > 1 else None
                 
-                if len(bc_umi.split("#")) > 1:
-                    bc = bc_umi.split("#")[1]
-                    umi = bc_umi.split("#")[0].split("_")[1]
+                if bc:
                     read.tags['CB'] = bc
+                if umi:
                     read.tags['UR'] = umi
-                else:
-                    bc = bc_umi
-                    read.tags['CB'] = bc
                 
                 # Write new reads
                 out_sam.write(read)
