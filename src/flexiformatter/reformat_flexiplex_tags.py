@@ -34,12 +34,12 @@ def main(infile: str):
             
                 # Get header name and split by "_#" or "#"
                 match = re.match(r'^([ACGT]+)_([ACGT]*)#', read.qname)
-                print(match)
+                #print(match)
                 bc = match.group(1) if match else None
                 umi = match.group(2) if match and len(match.groups()) > 1 else None
                 
                 # Print bc
-                print(f"BC: {bc}, UMI: {umi}")
+                #print(f"BC: {bc}, UMI: {umi}")
 
                 if bc:
                     read.tags['CB'] = bc
